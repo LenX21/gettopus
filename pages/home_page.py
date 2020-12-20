@@ -12,7 +12,7 @@ from locators import locators as cl
 class HomePage(Page):
     CURRENT_ACTIVE_BANNER = None
     CURRENT_ACTIVE_DOT = None
-    products_names = []
+    _products_names = []
 
     def open_home_page(self):
         self.open_page(TestData.BASE_URL)
@@ -129,14 +129,27 @@ class HomePage(Page):
                 no_errors = False
         assert no_errors, "Error. Product doesn't have requested attribute. See log for details"
 
+    def set_current_product(self, product_webelement):
+        HomePageLocators.set_current_product(product_webelement)
+        self._products_names.append(product_webelement.find_element_by_css_selector(cl.ProductAttributes.NAME).text)
+        print('Test wish')
+        print(self._products_names)
+
+    @staticmethod
+    def get_products_name_sorted(is_sorted=True):
+        names = sorted(HomePage._products_names)
+        HomePage._products_names = []
+        return names
+
     def add_product_on_sale_to_wishlist(self, product_position: int):
         product_by_number = self.get_products_on_sale()[product_position - 1]
         self.mouse_hover_action(*HomePageLocators.get_current_product_css_locator(product_by_number))
         self.click(*HomePageLocators.get_wishlist_heart_icon_for_product_on_sale(product_by_number))
         self.wait_for_element_appears(
             *HomePageLocators.get_wishlist_heart_icon_for_product_on_sale(product_by_number, is_added=True))
-        HomePageLocators.set_current_product(product_by_number)
-        self.products_names.append(product_by_number.find_element_by_css_selector(cl.ProductAttributes.NAME).text)
+        # HomePageLocators.set_current_product(product_by_number)
+        # self.products_names.append(product_by_number.find_element_by_css_selector(cl.ProductAttributes.NAME).text)
+        self.set_current_product(product_by_number)
 
     def open_wishlist(self):
         self.click(*HomePageLocators.get_wishlist_heart_icon_for_product_on_sale(
@@ -147,10 +160,54 @@ class HomePage(Page):
         self.mouse_hover_action(*HomePageLocators.get_current_product_css_locator(product_by_number))
         self.click(*HomePageLocators.get_current_product_css_locator(product_by_number))
 
+    # def open_quick_view_product_on_sale(self, product_position: int):
+    #     product_by_number = self.get_products_on_sale()[product_position - 1]
+    #     self.mouse_hover_action(*HomePageLocators.get_current_product_css_locator(product_by_number))
+    #     self.click(*HomePageLocators.PRODUCT_ON_SALE_QUICK_VIEW)
+    #     self.set_current_product(product_by_number)
+
     def open_quick_view_product_on_sale(self, product_position: int):
         product_by_number = self.get_products_on_sale()[product_position - 1]
         self.mouse_hover_action(*HomePageLocators.get_current_product_css_locator(product_by_number))
-        self.click(*HomePageLocators.PRODUCT_ON_SALE_QUICK_VIEW)
+        HomePageLocators.get_quick_view_link_path(product_by_number)
+        self.click(*HomePageLocators.get_quick_view_link_path(product_by_number))
+        self.set_current_product(product_by_number)
+
+    def verify_quick_view_title(self):
+        self.find_elements(*HomePageLocators.QUICK_VIEW_CONTENT_TEXT_ALL)
+        print(self.find_elements(*HomePageLocators.QUICK_VIEW_CONTENT_TEXT_ALL))
+        for item in self.find_elements(*HomePageLocators.QUICK_VIEW_CONTENT_TEXT_ALL):
+            item.find_element_by_css_selector("a").text
+        current_quick_view_product_name = \
+            self.find_element(*HomePageLocators.QUICK_VIEW_CONTENT_TEXT_ALL).find_element_by_css_selector("a").text
+        quick_view_product_name = HomePage.get_products_name_sorted()
+        assert len(quick_view_product_name) == 1, \
+            f"Error. Only one name should be available for verification {quick_view_product_name}"
+        assert quick_view_product_name[0] == current_quick_view_product_name, \
+            f"Error. Incorrect name in Quick View for current product. " \
+            f"Expected name: {quick_view_product_name[0]}\nActual name: {current_quick_view_product_name}"
+
+    def close_quick_view_x(self):
+        print('Test quick')
+        self.verify_quick_view_title()
+        self.click(*HomePageLocators.QUICK_VIEW_CLOSE)
+        self.wait_for_element_disappears(*HomePageLocators.QUICK_VIEW_CONTENT_IS_READY)
+
+    def switch_between_quick_view_images(self):
+        # current_image = self.find_element(*HomePageLocators.QUICK_VIEW_CURRENT_IMAGE)
+        # # print(HomePageLocators.get_quick_view_image_locator(current_image))
+        # self.find_element(*HomePageLocators.get_quick_view_image_locator(current_image))
+        not_selected_dots = self.find_elements(*HomePageLocators.QUICK_VIEW_IMAGE_DOTS_NOT_SELECTED)
+        for dot in not_selected_dots:
+            image_is_selected = self.find_element(*HomePageLocators.QUICK_VIEW_CURRENT_IMAGE)
+            # self.find_element(*HomePageLocators.get_quick_view_image_locator(current_image))
+            image_is_selected_locator = HomePageLocators.get_quick_view_image_locator(image_is_selected)
+            logger.info(f'Current quick view image {image_is_selected_locator[1]}')
+            logger.info(f'Next dot to click: {dot.get_attribute("aria-label")}')
+            dot.click()
+            self.wait_for_element_disappears(*image_is_selected_locator)
+            # self.wait_for_element_disappears(*HomePageLocators.get_quick_view_image_locator(image_is_selected))
+
 
 
     # TODO: Implement correct banner rotation cycle
@@ -227,3 +284,5 @@ class HomePage(Page):
     #     print()
     #     product_heart_icon.click(product_by_number.find_element(*WishlistLocators.get_wish_button(is_added=True)))
     #     sleep(3)
+
+

@@ -53,6 +53,20 @@ class HomePageLocators:
     MAIN_CONTENT_SECTIONS = (By.CSS_SELECTOR, 'div.container.section-title-container')
     PRODUCT_ON_SALE_QUICK_VIEW = (By.CSS_SELECTOR, 'a.quick-view.quick-view-added')
 
+    # Quick View Section
+    quick_view_content = 'div.mfp-content'
+    # g = 'div.mfp-content div.slide.is-selected img[src*="https://gettop.us/wp-content/uploads/2013/08/mc13-4-600x338.jpeg"]'
+    QUICK_VIEW_CLOSE = (By.CSS_SELECTOR, 'button[title*="Close"].mfp-close')
+    QUICK_VIEW_CONTENT_IS_READY = (By.CSS_SELECTOR, 'div.mfp-bg.mfp-ready')
+    # QUICK_VIEW_CONTENT_TEXT_ALL = (By.CSS_SELECTOR, 'div.mfp-content div.product-lightbox-inner')
+    QUICK_VIEW_CONTENT_TEXT_ALL = (By.CSS_SELECTOR, f'{quick_view_content} div.product-lightbox-inner')
+    # QUICK_VIEW_CONTENT_IMAGES = (By.CSS_SELECTOR, 'div.slide[aria-selected="false"] img')
+    # QUICK_VIEW_IMAGE_DOTS = (By.CSS_SELECTOR, 'div.mfp-content li.dot[aria-label*="Page dot"]')
+    # $$('div.mfp-content li.dot[aria-label*="Page dot"]:not(.is-selected)')
+    QUICK_VIEW_IMAGE_DOTS_NOT_SELECTED = (By.CSS_SELECTOR,
+                                          f'{quick_view_content} li.dot[aria-label*="Page dot"]:not(.is-selected)')
+    QUICK_VIEW_CURRENT_IMAGE = (By.CSS_SELECTOR, f'{quick_view_content} div.slide.is-selected img')
+
     @staticmethod
     def navigate_between_banners(direction: str):
         return (By.CSS_SELECTOR,
@@ -73,14 +87,36 @@ class HomePageLocators:
         class_css = '.'.join(webelement.get_attribute("class").split(" "))
         return By.CSS_SELECTOR, f'div.{class_css}'
 
+    # @staticmethod
+    # def get_wishlist_heart_icon_for_product_on_sale(product, is_added=False):
+    #     if isinstance(product, tuple):
+    #         current_product_css = product[1]
+    #     else:
+    #         current_product_css = HomePageLocators.get_current_product_css_locator(product)[1]
+    #     wish_button_css = WishlistLocators.get_wish_button(is_added=is_added)[1]
+    #     return By.CSS_SELECTOR, ' '.join([current_product_css, wish_button_css])
+
     @staticmethod
     def get_wishlist_heart_icon_for_product_on_sale(product, is_added=False):
-        if isinstance(product, tuple):
-            current_product_css = product[1]
-        else:
-            current_product_css = HomePageLocators.get_current_product_css_locator(product)[1]
         wish_button_css = WishlistLocators.get_wish_button(is_added=is_added)[1]
-        return By.CSS_SELECTOR, ' '.join([current_product_css, wish_button_css])
+        return By.CSS_SELECTOR, ' '.join([HomePageLocators.get_product_css(product), wish_button_css])
+
+    @staticmethod
+    def get_quick_view_link_path(product):
+        return By.CSS_SELECTOR, \
+               ' '.join([HomePageLocators.get_product_css(product), HomePageLocators.PRODUCT_ON_SALE_QUICK_VIEW[1]])
+
+    @staticmethod
+    def get_product_css(product):
+        if isinstance(product, tuple):
+            return product[1]
+        return HomePageLocators.get_current_product_css_locator(product)[1]
+
+    @staticmethod
+    def get_quick_view_image_locator(image_obj):
+        image_obj.get_attribute("src")
+        return By.CSS_SELECTOR, \
+               f'{HomePageLocators.QUICK_VIEW_CURRENT_IMAGE[1]}[src="{image_obj.get_attribute("src")}"]'
 
 
 class WishlistLocators:

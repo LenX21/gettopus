@@ -24,6 +24,7 @@ Feature: "Latest Products on Sale" category Product Attributes Home Page
     And     Open wishlist by clicking on heart icon
     Then    Verify that wishlist contains the product
 
+
   Scenario: Open product page for the product from "Latest Products on Sale"
     Given   Open Home page
     When    Click on product "1"
@@ -31,19 +32,18 @@ Feature: "Latest Products on Sale" category Product Attributes Home Page
 
   Scenario: Open quick view for product "Latest products on sale" section
     Given   Open Home page
-    When    Click on quick view for product "1"
+    When    Click on Quick View for product "3"
     And     Click on X to close Quick View
-    Then    Verify that Quick View is closed
 
   Scenario: Add product from Quick View to card
     Given   Open Home page
-    When    Click on quick view for product "1"
-    And     Add product to card
-    Then    Verify the product is added to card
+    When    Click on Quick View for product "1"
+#    And     Add product to card
+#    Then    Verify the product is added to card
 
   Scenario: Add product from Quick View to card and check all images for product
     Given   Open Home page
-    When    Click on quick view for product "1"
+    When    Click on Quick View for product "1"
     Then    Verify all images available for preview on Quick View
 
 

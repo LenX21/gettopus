@@ -68,6 +68,9 @@ class Page:
     def wait_for_element_appears(self, *locator):
         self.driver.wait.until(ec.visibility_of_element_located(locator))
 
+    def wait_for_element_disappears(self, *locator):
+        self.driver.wait.until(ec.invisibility_of_element_located(locator))
+
     def wait_element_is_clickable(self, *locator):
         self.driver.wait.until(ec.element_to_be_clickable(locator))
 

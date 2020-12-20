@@ -10,6 +10,6 @@ class WishlistPage(Page):
         self.wait_for_element_appears(*WishlistLocators.WISHLIST_TITLE)
         wishlist_names = [product.text for product in
                           self.find_elements(*WishlistLocators.get_product_attributes(cl.WishlistData.NAME))]
-        assert sorted(HomePage.products_names) == sorted(wishlist_names), \
+        assert HomePage.get_products_name_sorted() == sorted(wishlist_names), \
             f"Error. Wishlist contains incorrect list of products. " \
-            f"Expected: {HomePage.products_names}\nActual:{wishlist_names}"
+            f"Expected: {HomePage._products_names}\nActual:{wishlist_names}"
