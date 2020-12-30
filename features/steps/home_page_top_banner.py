@@ -45,7 +45,8 @@ def verify_section_title_home_page(context, section_title):
     context.app.home_page.verify_titles_of_content_sections(section_title)
 
 
-@then('Verify Products "(?P<section_title>Latest products on sale)" category have "(?P<attribute>NAME|CATEGORY|PRICE|IMAGE|RATING|ONSALE)" attribute')
+@then(
+    'Verify Products "(?P<section_title>Latest products on sale)" category have "(?P<attribute>NAME|CATEGORY|PRICE|IMAGE|RATING|ONSALE)" attribute')
 def verify_products_attributes_for_section_home_page(context, section_title, attribute):
     context.app.home_page.verify_product_mandatory_attribute(section_title, attribute)
 
@@ -59,9 +60,11 @@ def verify_products_attributes_for_section_home_page(context, section_title):
 def click_heart_icon_product_by_number(context, specific_product):
     context.app.home_page.add_product_on_sale_to_wishlist(int(specific_product))
 
+
 @when('Open wishlist by clicking on heart icon')
 def open_wish_list_by_clicking_heart_icon(context):
     context.app.home_page.open_wishlist()
+
 
 @then('Verify that wishlist contains the product')
 def verify_wishlist_contains(context):
@@ -77,6 +80,7 @@ def click_on_product_on_sale(context, specific_product):
 def verify_product_data(context):
     context.app.product_page.verify_product_data()
 
+
 @when('Click on Quick View for product "(?P<specific_product>\d+)"')
 def click_on_quick_view_link(context, specific_product):
     context.app.home_page.open_quick_view_product_on_sale(int(specific_product))
@@ -90,3 +94,13 @@ def close_quick_view_by_clicking_x(context):
 @then("Verify all images available for preview on Quick View")
 def verify_quick_view_images(context):
     context.app.home_page.switch_between_quick_view_images()
+
+
+@then('Verify "(?P<category_title>Browse our Categories)" section contains "(?P<categories_count>\d+)" categories')
+def verify_home_page_contains_category(context, categories_count):
+    pass
+
+
+@then('Verify home page is opened')
+def verify_home_page_is_opened(context):
+    context.app.home_page.verify_home_page_is_opened()

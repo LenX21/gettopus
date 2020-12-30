@@ -5,6 +5,7 @@ from app.logger import logger
 from pages.base_page import Page
 from app.config import TestData
 from locators.locators import HomePageLocators
+from locators.ProductCategory import ProductCategoryLocators
 from app.config import Directions
 from locators import locators as cl
 
@@ -14,8 +15,16 @@ class HomePage(Page):
     CURRENT_ACTIVE_DOT = None
     _products_names = []
 
+    # def __init__(self, driver):
+    #     super.__init__(driver)
+    #     self.locators = ProductCategoryLocators('HOMR')
+
     def open_home_page(self):
         self.open_page(TestData.BASE_URL)
+
+    def verify_home_page_is_opened(self):
+        assert self.get_url() == TestData.BASE_URL, f"Error. Home page: {TestData.BASE_URL} should be opened. " \
+                                                    f"Current page is {self.get_url()}"
 
     def get_active_banner(self):
         all_banners = self.find_elements(*HomePageLocators.TOP_BANNER_ALL)
@@ -95,12 +104,14 @@ class HomePage(Page):
         for child in all_sections:
             title_from_span = child.find_element_by_css_selector('span.section-title-main').text
             if title_from_span.lower() == section_title.lower():
+                logger.info(f'Section with title: "{section_title}" presents on the page')
                 return child
         return None
 
     def get_products_on_sale(self):
         return self.find_elements(*HomePageLocators.LATEST_PRODUCTS_ON_SALE)
 
+    # TODO - Duplicated by Product Category
     def verify_product_all_mandatory_attributes(self, section_title: str):
         no_errors = True
         logger.info(f"Verify product attribute for category '{section_title}'")
@@ -114,7 +125,7 @@ class HomePage(Page):
                     no_errors = False
         assert no_errors, "Error. Product doesn't have requested attribute. See log for details"
 
-    # TODO
+    # TODO - Duplicated by Product Category
     # Keep only one type of verification
     # verify_product_all_mandatory_attributes or verify_product_mandatory_attribute
     # update and make it not by find_element_by_css_selector, but (By.CSS, '')
@@ -200,6 +211,11 @@ class HomePage(Page):
         not_selected_dots = self.find_elements(*HomePageLocators.QUICK_VIEW_IMAGE_DOTS_NOT_SELECTED)
         for dot in not_selected_dots:
             image_is_selected = self.find_element(*HomePageLocators.QUICK_VIEW_CURRENT_IMAGE)
+            # print(image_is_selected.get_attribute("src"))
+            # self.broken_link(image_is_selected)
+            # image_is_selected = self.find_element(*HomePageLocators.QUICK_VIEW_CURRENT_IMAGE)
+            # print(image_is_selected.get_attribute("src"))
+            self.verify_image_is_loaded(image_is_selected)
             # self.find_element(*HomePageLocators.get_quick_view_image_locator(current_image))
             image_is_selected_locator = HomePageLocators.get_quick_view_image_locator(image_is_selected)
             logger.info(f'Current quick view image {image_is_selected_locator[1]}')
@@ -208,7 +224,34 @@ class HomePage(Page):
             self.wait_for_element_disappears(*image_is_selected_locator)
             # self.wait_for_element_disappears(*HomePageLocators.get_quick_view_image_locator(image_is_selected))
 
+    def verify_image_is_loaded(self, image_obj):
+        # print(image_is_selected.size)
+        image_is_loaded = \
+            self.driver.execute_script(
+                "return arguments[0].complete && typeof arguments[0].naturalWidth != \"undefined\" && arguments[0].naturalWidth > 0",
+                image_obj)
+        print(self.driver.execute_script(
+            "return arguments[0].complete && typeof arguments[0].naturalWidth != \"undefined\" && arguments[0].naturalWidth > 0",
+            image_obj))
+        assert image_is_loaded, "Error. Image is not loaded"
 
+    def open_category_by_name(self, category_name):
+        for category in self.find_elements(*HomePageLocators.MAIN_CONTENT_CATEGORIES):
+            title = category.find_element(*HomePageLocators.get_category_name()).text
+            if title.upper() != category_name.upper():
+                continue
+            logger.info(f'Open category: "{title}" by clicking on it')
+            category.find_element(*HomePageLocators.get_category_name()).click()
+            self.wait_title_contains(category_name)
+            logger.info(f"Page with title '{self.driver.title}' is opened")
+            return True
+        return False
+
+
+
+    # def broken_link(self, image_obj):
+    #
+    #     self.driver.execute_script("arguments[0].setAttribute('src','https://tst.jpg')", image_obj)
 
     # TODO: Implement correct banner rotation cycle
     #       Clicking NEXT should change banner id by 1, or switch to first of it was last banner
@@ -284,5 +327,3 @@ class HomePage(Page):
     #     print()
     #     product_heart_icon.click(product_by_number.find_element(*WishlistLocators.get_wish_button(is_added=True)))
     #     sleep(3)
-
-

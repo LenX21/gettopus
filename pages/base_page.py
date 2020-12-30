@@ -3,12 +3,16 @@ from selenium.webdriver.support.event_firing_webdriver import EventFiringWebElem
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.config import TestData
+from locators import TopMenu
+
 
 class Page:
 
     def __init__(self, driver):
         self.driver = driver
         self.driver.wait = WebDriverWait(self.driver, 15)
+        self._test_data = TestData()
 
     @staticmethod
     def _wrap_elements(result):
@@ -19,6 +23,9 @@ class Page:
 
     def get_title(self):
         return self.driver.title
+
+    def get_url(self):
+        return self.driver.current_url
 
     def click(self, *locator):
         self.driver.find_element(*locator).click()
@@ -83,6 +90,9 @@ class Page:
     def wait_new_window(self):
         self.driver.wait.until(ec.new_window_is_opened)
         # WebDriverWait(context.driver, 5).until(ec.new_window_is_opened)
+
+    def wait_till_text_updated(self, text: str, *locator):
+        self.driver.wait.until(lambda driver: driver.find_element(*locator).text != text)
 
     def open_link_in_new_tab(self, url: str):
         self.driver.execute_script(f"window.open('{url}')")

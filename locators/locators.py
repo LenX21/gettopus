@@ -1,5 +1,9 @@
 from selenium.webdriver.common.by import By
 from strenum import StrEnum
+from enum import Enum
+
+from locators.ProductCategory import ProductCategoryLocators
+from locators.TopMenu import TopMenuLocators
 
 
 class WishlistData(StrEnum):
@@ -15,6 +19,40 @@ class ProductAttributes(StrEnum):
     PRICE = 'span.price'
     ONSALE = 'span.onsale'
     RATING = 'div.star-rating'
+
+
+class ProductCategoriesTopMenu(Enum):
+    # category:
+    MAC = TopMenuLocators(category_name='MACBOOK', locator_id='menu-item-468')
+    IPHONE = TopMenuLocators(category_name='IPHONE', locator_id='menu-item-469')
+    IPAD = TopMenuLocators(category_name='IPAD', locator_id='menu-item-470')
+    WATCH = TopMenuLocators(category_name='WATCH', locator_id='menu-item-471')
+    ACCESSORIES = TopMenuLocators(category_name='AIRPODS', locator_id='menu-item-472')
+    # other:
+    ACCOUNT = TopMenuLocators(css_selector='a.nav-top-link.nav-top-not-logged-in[data-open="#login-form-popup"]')
+    LOGO = TopMenuLocators(css_selector='a[rel="home"]')
+    PRICE = TopMenuLocators(css_selector='span.cart-price')
+    CART = TopMenuLocators(css_selector='li.cart-item.has-icon.has-dropdown span.cart-icon.image-icon')
+    TOOLTIP = TopMenuLocators(css_selector='li.cart-item.has-icon.has-dropdown.current-dropdown')
+    CURRENCY = TopMenuLocators(css_selector='span.woocommerce-Price-currencySymbol')
+
+
+# ProductCategoriesTopMenu.MAC
+
+
+class ProductCategoriesTopMenuOther(Enum):
+    SEARCH_ICON_CATEGORY = TopMenuLocators(css_selector='a[aria-label] i.icon-search')
+    SEARCH_ICON_NEAR_SEARCH_FIELD = \
+        TopMenuLocators(css_selector='div.flex-col.flex-grow '
+                                     'button.ux-search-submit.submit-button.secondary.button.icon'
+                                     '[value="Search"][type="submit"]')
+    SEARCH_FIELD = TopMenuLocators(locator_id='woocommerce-product-search-field-0')
+    EMPTY_CART = \
+        TopMenuLocators(css_selector='ul.nav-dropdown.nav-dropdown-default p.woocommerce-mini-cart__empty-message')
+    # LOGIN = TopMenuLocators(css_selector='a.nav-top-link.nav-top-not-logged-in[data-open="#login-form-popup"]')
+    # LOGO = TopMenuLocators(css_selector='a[rel="home"]')
+    # CART = TopMenuLocators(css_selector='span.cart-price')
+    # CART_ICON = TopMenuLocators(css_selector='li.cart-item.has-icon.has-dropdown span.cart-icon.image-icon')
 
 
 class HomePageLocators:
@@ -47,6 +85,7 @@ class HomePageLocators:
     PRODUCT_SECTIONS = (By.CSS_SELECTOR, 'div.container.section-title-container')
     # LATEST_PRODUCT_ON_SALE = (By.XPATH,
     #                           '//span[@class="section-title-main" and contains(text(), "Latest products on sale")]')
+    # TODO: Duplicated by Product_category
     LATEST_PRODUCTS_ON_SALE = (By.CSS_SELECTOR,
                                'div.product-small.col.has-hover.product.type-product')
     CONTENT_SECTION = (By.ID, 'content')
@@ -66,6 +105,14 @@ class HomePageLocators:
     QUICK_VIEW_IMAGE_DOTS_NOT_SELECTED = (By.CSS_SELECTOR,
                                           f'{quick_view_content} li.dot[aria-label*="Page dot"]:not(.is-selected)')
     QUICK_VIEW_CURRENT_IMAGE = (By.CSS_SELECTOR, f'{quick_view_content} div.slide.is-selected img')
+    MAIN_CONTENT_CATEGORIES = (By.CSS_SELECTOR, 'div.product-category.col')
+    MAIN_CONTENT_CATEGORIES_IS_SELECTED = (By.CSS_SELECTOR, 'div.product-category.col.is-selected')
+
+    @staticmethod
+    def get_category_name():
+        categories = HomePageLocators.MAIN_CONTENT_CATEGORIES[1]
+        categories_attribute = 'h5.uppercase.header-title'
+        return By.CSS_SELECTOR, f'{categories} {categories_attribute}'.strip()
 
     @staticmethod
     def navigate_between_banners(direction: str):
@@ -144,4 +191,27 @@ class ProductPageLocators:
     ADD_TO_CARD_BUTTON = (By.CSS_SELECTOR, 'button[type="submit"][name="add-to-cart"]')
     PRODUCT_TITLE = (By.CSS_SELECTOR, 'h1.product-title.product_title.entry-title')
     PRODUCT_SHORT_DESCRIPTION = (By.CSS_SELECTOR, 'div.product-short-description')
-    PRODUCT_PRICE = (By.CSS_SELECTOR, 'p.price.product-page-price.price-on-sale')
+    PRODUCT_PRICE_ONSALE = By.CSS_SELECTOR, 'p.price.product-page-price :not(del) span.woocommerce-Price-amount.amount'
+    # PRODUCT_PRICE_ONSALE = By.CSS_SELECTOR, 'p.price.product-page-price.price-on-sale'
+    PRODUCT_PRICE_ORIGIN = By.CSS_SELECTOR, 'p.price.product-page-price del span.woocommerce-Price-amount.amount'
+    PRODUCT_PRICES = By.CSS_SELECTOR, 'p.price.product-page-price span.woocommerce-Price-amount.amount'
+    CURRENCY_SYMBOL = By.CSS_SELECTOR, 'p.price.product-page-price span.woocommerce-Price-currencySymbol'
+    EMPTY_SEARCH_RESULT = (By.CSS_SELECTOR, 'div.shop-container p.woocommerce-info')
+    SEARCH_RESULT_FOR = (By.CSS_SELECTOR, 'nav.woocommerce-breadcrumb.breadcrumbs.uppercase')
+    # SEARCH_RESULT_FOR = (By.CSS_SELECTOR, 'nav.woocommerce-breadcrumb.breadcrumbs.uppercase span.divider:last-child')
+
+
+# class TopMenuLocators:
+#     @staticmethod
+#     def get_all_category():
+#         pass
+
+class LoginFormLocators:
+    LOGIN_FORM = By.CSS_SELECTOR, 'div.account-login-inner'
+
+
+class CartLocators:
+    EMPTY_CART = By.CSS_SELECTOR, 'div.text-center p.cart-empty'
+    RETURN_TO_SHOP_BTN = By.CSS_SELECTOR, 'a.button.primary.wc-backward'
+    CART_PAGE_TITLE = By.CSS_SELECTOR, 'div.checkout-page-title.page-title'
+    CART_CURRENT_STATE = By.CSS_SELECTOR, 'div.checkout-page-title.page-title a.current'
