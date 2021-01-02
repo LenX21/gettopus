@@ -35,20 +35,16 @@ class ProductPage(Page):
             f"Error. Search result should contain word: {text.upper()}. Actual result: '{search_result_for}'"
 
     def add_product_to_cart(self):
-        self.verify_product_data()
-        current = TopMenuPage.cart_icon_amount_of_products()
+        # self.verify_product_data()
         self.click(*ProductPageLocators.ADD_TO_CARD_BUTTON)
-        TopMenuPage.wait_cart_icon_updated(current+1)
 
     def get_product_price(self):
         currency_symbol = self.find_element(*ProductPageLocators.CURRENCY_SYMBOL).text
         prices = self.find_elements(*ProductPageLocators.PRODUCT_PRICES)
-        print(len(prices))
         if len(prices) > 1:
             price = self.find_element(*ProductPageLocators.PRODUCT_PRICE_ONSALE)
         else:
             price = prices[0]
-        print(f'PRICE: {price.text}')
         return float(price.text.split(currency_symbol)[1].replace(',', ''))
 
     def get_products_titles(self):

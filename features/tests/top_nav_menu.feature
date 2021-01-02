@@ -120,10 +120,28 @@ Feature: Top navigation menu
     And   Hover over "CART" icon on Top menu
     Then  Verify content of tooltip for cart icon
 
-  Scenario: Cart page is opened after clicking "View Cart" button from Top Menu tooltip
+  Scenario: Shopping Cart is opened after clicking "View Cart" button from Top Menu tooltip
     Given Open "MACBOOK" product category page
     When  Chose product "2" from category list by number
     And   Add product to card
+    And   Click "VIEW CART" button on Top Menu
+#    And   Hover over "CART" icon on Top menu
+#    And   Open Cart by clicking "View Cart" button on Top Menu
+    Then  Verify Shopping Cart is opened
+
+  Scenario: Checkout Details Cart is opened after clicking "Checkout" button from Top Menu tooltip
+    Given Open Home page
+    When  Search for product "iPhone 11 Pro"
+    And   Chose product "1" from category list by number
+    And   Add product to card
+    And   Click "CHECKOUT" button on Top Menu
+    Then  Verify "Checkout Details" is opened
+
+  Scenario: Remove product from Cart Top menu
+    Given Open Home page
+    When  Search for product "MacBook Air"
+    When  Add product to card
     And   Hover over "CART" icon on Top menu
-    And   Open Cart by clicking "View Cart" button on Top Menu
-    Then  Verify Cart is open
+    And   Remove "MacBook Air" product from Cart Top Menu
+    When  Click on CART icon on Top menu
+    Then  Verify Empty Cart page shows "Your cart is currently empty." message

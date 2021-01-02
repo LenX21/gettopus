@@ -13,6 +13,9 @@ class ProductCategoryPage(Page):
     def open_product_category_page_by_name(self, category_name):
         self.open_page(self._test_data.get_product_link_by_name(category_name))
 
+    def hover_over_product_by_number(self, number: int):
+        self.mouse_hover_action(*cl.ProductCategoryLocators.get_product_locator_by_number(number))
+
     # TODO: duplicated by ProductPage.get_search_for(self, text) - keep only one
     def verify_category_is_opened(self, category_title):
         actual_result = self.current_open_category()
@@ -27,10 +30,13 @@ class ProductCategoryPage(Page):
         pass
 
     def verify_all_products_category(self, category_title):
-        pass
+        self.verify_product_attribute('CATEGORY', category_title)
 
-    def verify_all_products_title_contains(self, text: str):
-        pass
+    def verify_all_products_contain_title(self, title: str):
+        for product in self.all_products_in_category():
+            current = product.find_element_by_css_selector(cl.ProductAttributes.NAME)
+            assert title.upper() in current.text.upper(), \
+                f'Error. Product title should contains {title} in name. Current name {current.text}'
 
     def verify_all_products_price(self, start=False, end=False):
         if start:
@@ -64,7 +70,15 @@ class ProductCategoryPage(Page):
         else:
             raise ValueError('No search criteria specified')
 
+    def number_of_products_is_shown(self):
+        text_per_page = self.find_element(*ProductCategoryLocators.RESULT_COUNT).text
+        for word in text_per_page.split():
+            if word.isdigit():
+                logger.info(f'{text_per_page}, Get number: {word} to count products per page')
+                return int(word)
 
+    def compare_number_products_shown_per_page(self):
+        number_per_page = self.number_of_products_is_shown()
+        assert len(self.all_products_in_category()) == number_per_page, \
+            f"Error. Amount of products on page should be: {number_per_page}. Current amount {len(self.all_products_in_category())}"
 
-    def get_product_by_id(self):
-        pass

@@ -1,3 +1,5 @@
+import time
+
 from app.logger import logger
 from pages.base_page import Page
 from locators import locators as cl
@@ -16,6 +18,10 @@ def tooltip_dd():
 
 
 class TopMenuPage(Page):
+    tooltip_buttons = {
+        'VIEW CART': get_value('TOOLTIP').get_cart_tooltip_elements('VIEW_CART_BTN'),
+        'CHECKOUT': get_value('TOOLTIP').get_cart_tooltip_elements('CHECKOUT_BTN')
+    }
 
     def open_category_by_name(self, category_name):
         # print(cl.ProductCategoriesTopMenu[category_name].value.get_category_name())
@@ -33,6 +39,11 @@ class TopMenuPage(Page):
 
     def hover_over_icon(self, icon: str):
         self.mouse_hover_action(*get_locator(icon))
+
+    def open_cart_tooltip(self, amount_of_products_added: int, cart_btn: str):
+        self.wait_cart_icon_updated(amount_of_products_added)
+        self.mouse_hover_action(*get_locator('CART'))
+        self.open_cart_page(cart_btn)
 
     def verify_all_products_from_dd(self, category_name: str):
         category = get_value(category_name)
@@ -77,6 +88,14 @@ class TopMenuPage(Page):
              for product in self.find_elements(*tooltip.get_cart_tooltip_elements('ALL_PRODUCTS')))
         return tooltip_products_titles
 
+    def remove_product_by_name(self, product_name: str):
+        tooltip = get_value('TOOLTIP')
+        for product in self.find_elements(*tooltip.get_cart_tooltip_elements('ALL_PRODUCTS')):
+            if product.find_element(*tooltip.get_cart_tooltip_elements('PRODUCT_TITLE')).text == product_name:
+                product.find_element(*tooltip.get_cart_tooltip_elements('REMOVE_PRODUCT_BTN')).click()
+                time.sleep(4)
+                break
+
     def cart_icon_amount_of_products(self):
         return int(self.find_element(*get_locator('CART')).text)
 
@@ -87,15 +106,13 @@ class TopMenuPage(Page):
 
     def verify_tooltip_products_added_to_cart(self, products_added):
         actual_list = self.tooltip_products_titles()
-        print(actual_list)
-        print(products_added)
         for i in products_added:
             print(i)
         assert sorted(actual_list) == sorted(tuple(products_added)), \
             f"Error. List of products added to cart should be: {products_added}. Actual set: {actual_list}"
 
-    def open_cart_page(self):
-        self.click(*get_value('TOOLTIP').get_cart_tooltip_elements('VIEW_CART_BTN'))
+    def open_cart_page(self, button: str):
+        self.click(*self.tooltip_buttons[button])
 
     def wait_cart_icon_updated(self, amount_of_items: int):
         self.driver.wait.until(lambda driver: int(driver.find_element(*get_locator('CART')).text) == amount_of_items)

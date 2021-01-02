@@ -9,6 +9,11 @@ def empty_cart(context, search_text):
     context.app.cart_page.verify_cart_is_empty(search_text)
 
 
-@then("Verify Cart is open")
+@then("Verify Shopping Cart is opened")
 def verify_current_state(context):
     context.app.cart_page.current_state()
+
+
+@then('Verify "(?P<cart_state>Shopping Cart|Checkout Details|Order Complete)" is opened')
+def verify_current_state(context, cart_state):
+    context.app.cart_page.current_state(cart_state)

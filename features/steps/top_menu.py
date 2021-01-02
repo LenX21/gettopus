@@ -77,3 +77,13 @@ def tooltip_cart_content(context):
 @when('Open Cart by clicking "View Cart" button on Top Menu')
 def click_view_cart_button(context):
     context.app.top_menu.open_cart_page()
+
+
+@when('Click "(?P<icon_name>VIEW CART|CHECKOUT)" button on Top Menu')
+def step_impl(context, icon_name):
+    context.app.top_menu.open_cart_tooltip(len(context.products_titles), icon_name)
+
+
+@when('Remove "(?P<product_name>[\w\s]+)" product from Cart Top Menu')
+def step_impl(context, product_name):
+    context.app.top_menu.remove_product_by_name(product_name)

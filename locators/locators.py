@@ -2,7 +2,9 @@ from selenium.webdriver.common.by import By
 from strenum import StrEnum
 from enum import Enum
 
+from locators.FooterMenu import FooterLocators
 from locators.ProductCategory import ProductCategoryLocators
+from locators.QuickView import QuickViewLocators
 from locators.TopMenu import TopMenuLocators
 
 
@@ -38,6 +40,18 @@ class ProductCategoriesTopMenu(Enum):
 
 
 # ProductCategoriesTopMenu.MAC
+
+class ProductCategoryFooter(Enum):
+    MAC = FooterLocators(category_name='MACBOOK', css_selector='li.menu-item-468')
+    IPHONE = FooterLocators(category_name='IPHONE', css_selector='li.menu-item-469')
+    IPAD = FooterLocators(category_name='IPAD', css_selector='li.menu-item-470')
+    WATCH = FooterLocators(category_name='WATCH', css_selector='li.menu-item-471')
+    ACCESSORIES = FooterLocators(category_name='AIRPODS', css_selector='li.menu-item-472')
+    BEST_SELLING = FooterLocators(locator_id='woocommerce_products-11')
+    LATEST = FooterLocators(locator_id='woocommerce_products-12')
+    TOP_RATED = FooterLocators(locator_id='woocommerce_top_rated_products-3')
+    COPYRIGHTS = FooterLocators(css_selector='div.copyright-footer')
+    CURRENCY = FooterLocators(css_selector='span.woocommerce-Price-currencySymbol')
 
 
 class ProductCategoriesTopMenuOther(Enum):
@@ -215,3 +229,18 @@ class CartLocators:
     RETURN_TO_SHOP_BTN = By.CSS_SELECTOR, 'a.button.primary.wc-backward'
     CART_PAGE_TITLE = By.CSS_SELECTOR, 'div.checkout-page-title.page-title'
     CART_CURRENT_STATE = By.CSS_SELECTOR, 'div.checkout-page-title.page-title a.current'
+
+
+class QuickViewLocators:
+    # self.quick_view_container = 'div.product-quick-view-container'
+    QUICK_VIEW = QuickViewLocators(css_selector='div.product-quick-view-container')
+    QUICK_VIEW_CLOSE_BTN = QuickViewLocators(css_selector='button[title*="Close"].mfp-close')
+    QUICK_VIEW_PRODUCT_LINK = QuickViewLocators(css_selector='a.quick-view.quick-view-added')
+    QUICK_VIEW_DOTS = QuickViewLocators(css_selector='div.product-quick-view-container li.dot')
+    QUICK_VIEW_PRODUCT_TITLE = QuickViewLocators(css_selector='div.product-info.summary.entry-summary h1')
+    QUICK_VIEW_ADD_TO_CART_BTN = QuickViewLocators(css_selector='button[type="submit"][name="add-to-cart"]')
+    QUICK_VIEW_DOT_SELECTED = QuickViewLocators(css_selector='div.product-quick-view-container li.dot.is-selected')
+    QUICK_VIEW_DOTS_DONT_SELECTED = \
+        QuickViewLocators(css_selector='div.product-quick-view-container li.dot:not(.is-selected)')
+
+

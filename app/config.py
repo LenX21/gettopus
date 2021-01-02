@@ -47,8 +47,6 @@ class TestData:
         'accessories': ItemDescription('Accessories')
     }
     PRODUCT_CATEGORY_URL = f'{BASE_URL}{PRODUCT_CATEGORY_PARTIAL_LINK}'
-    SHOPPING_CART_FIRST_STEP = 'SHOPPING CART'
-    SHOPPING_CART_SECOND_STEP = 'CHECKOUT DETAILS'
 
     @staticmethod
     def get_product_link_by_name(category_name: str):

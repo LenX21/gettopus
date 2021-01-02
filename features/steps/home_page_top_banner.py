@@ -86,9 +86,9 @@ def click_on_quick_view_link(context, specific_product):
     context.app.home_page.open_quick_view_product_on_sale(int(specific_product))
 
 
-@when("Click on X to close Quick View")
-def close_quick_view_by_clicking_x(context):
-    context.app.home_page.close_quick_view_x()
+# @when("Click on X to close Quick View")
+# def close_quick_view_by_clicking_x(context):
+#     context.app.home_page.close_quick_view_x()
 
 
 @then("Verify all images available for preview on Quick View")

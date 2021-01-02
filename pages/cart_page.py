@@ -6,6 +6,7 @@ from pages.base_page import Page
 
 
 class CartPage(Page):
+
     def verify_cart_is_opened(self):
         pass
 
@@ -14,7 +15,7 @@ class CartPage(Page):
         assert empty_cart.text == message, \
             f"Error. Empty cart message should be: {message}. Actual message: {empty_cart.text}"
 
-    def current_state(self):
+    def current_state(self, shopping_cart_state: str):
         assert self.find_element(*CartLocators.CART_CURRENT_STATE).text.upper() == \
-               TestData.SHOPPING_CART_FIRST_STEP.upper(), \
-            f"Error. Shopping cart first step to purchase should be: {TestData.SHOPPING_CART_FIRST_STEP.upper()}"
+               shopping_cart_state.upper(), \
+            f"Error. Shopping cart first step to purchase should be: {shopping_cart_state.upper()}"
