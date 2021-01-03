@@ -15,5 +15,12 @@ Feature: # Enter feature name here
 #User can submit a review
 # Correct amount of product reviews are shown
 
-  Scenario: # Enter scenario name here
-    # Enter steps here
+  Scenario: Product has image, name, price and description
+    Given Open Product page
+    Then  Verify Product has Title, Image, Price and Description
+
+  Scenario: Zoom in product image and close it
+    Given Open Product page
+    When  Zoom in product image
+    And   Switch between zoomed in the images
+    And   Close zoom in image

@@ -37,6 +37,7 @@ class ItemDescription:
 
 class TestData:
     BASE_URL: str = 'https://gettop.us/'
+    PRODUCT_PAGE_AIRPODS = 'https://gettop.us/product/airpods-pro/'
     PRODUCT_CATEGORY_PARTIAL_LINK: str = 'product-category'
     PRODUCT_CATEGORIES: Dict[str, ItemDescription] = {
         'ipad': ItemDescription('iPad'),

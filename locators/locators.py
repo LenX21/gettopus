@@ -202,8 +202,18 @@ class WishlistLocators:
 
 
 class ProductPageLocators:
+    PHOTOSWIPE_HIDDEN = By.CSS_SELECTOR, 'div.pswp[aria-hidden="true"]'
+    PHOTOSWIPE = By.CSS_SELECTOR, 'div.pswp.pswp--open.pswp--visible'
+    PHOTOSWIPE_TOP_BAR = By.CSS_SELECTOR, 'pswp__top-bar'
+    PHOTOSWIPE_IS_CLICKABLE = By.CSS_SELECTOR, 'div.pswp__ui.pswp__ui--fit:not(.pswp__ui--idle)'
+    PHOTOSWIPE_ARROW_RIGHT = By.CSS_SELECTOR, 'button.pswp__button--arrow--right'
+    PHOTOSWIPE_IMAGES = By.CSS_SELECTOR, 'div.pswp__container div.pswp__item'
+    PHOTOSWIPE_COUNTER = By.CSS_SELECTOR, 'div.pswp__ui div.pswp__counter'
+    PHOTOSWIPE_CLOSE_BTN = By.CSS_SELECTOR, 'button.pswp__button.pswp__button--close'
     ADD_TO_CARD_BUTTON = (By.CSS_SELECTOR, 'button[type="submit"][name="add-to-cart"]')
     PRODUCT_TITLE = (By.CSS_SELECTOR, 'h1.product-title.product_title.entry-title')
+    PRODUCT_IMAGE = By.CSS_SELECTOR, 'div.woocommerce-product-gallery__image.slide.first.is-selected img'
+    PRODUCT_ALL_IMAGES = By.CSS_SELECTOR, 'div.woocommerce-product-gallery__image.slide img'
     PRODUCT_SHORT_DESCRIPTION = (By.CSS_SELECTOR, 'div.product-short-description')
     PRODUCT_PRICE_ONSALE = By.CSS_SELECTOR, 'p.price.product-page-price :not(del) span.woocommerce-Price-amount.amount'
     # PRODUCT_PRICE_ONSALE = By.CSS_SELECTOR, 'p.price.product-page-price.price-on-sale'
@@ -214,11 +224,6 @@ class ProductPageLocators:
     SEARCH_RESULT_FOR = (By.CSS_SELECTOR, 'nav.woocommerce-breadcrumb.breadcrumbs.uppercase')
     # SEARCH_RESULT_FOR = (By.CSS_SELECTOR, 'nav.woocommerce-breadcrumb.breadcrumbs.uppercase span.divider:last-child')
 
-
-# class TopMenuLocators:
-#     @staticmethod
-#     def get_all_category():
-#         pass
 
 class LoginFormLocators:
     LOGIN_FORM = By.CSS_SELECTOR, 'div.account-login-inner'
@@ -231,7 +236,7 @@ class CartLocators:
     CART_CURRENT_STATE = By.CSS_SELECTOR, 'div.checkout-page-title.page-title a.current'
 
 
-class QuickViewLocators:
+class QuickViewWindowLocators(Enum):
     # self.quick_view_container = 'div.product-quick-view-container'
     QUICK_VIEW = QuickViewLocators(css_selector='div.product-quick-view-container')
     QUICK_VIEW_CLOSE_BTN = QuickViewLocators(css_selector='button[title*="Close"].mfp-close')

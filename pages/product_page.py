@@ -1,21 +1,32 @@
+import time
+
+from app.config import TestData
 from app.logger import logger
 from locators.locators import ProductPageLocators
 from pages.base_page import Page
-from pages.top_menu_page import TopMenuPage
 
 
 class ProductPage(Page):
+
+    def open_product_page(self):
+        self.open_page(TestData.PRODUCT_PAGE_AIRPODS)
+
     def add_product_to_the_card(self):
         pass
 
     # TODO: Never used - remove it
     def verify_product_data(self):
         self.wait_for_element_appears(*ProductPageLocators.PRODUCT_TITLE)
-        print(self.find_element(*ProductPageLocators.PRODUCT_SHORT_DESCRIPTION).text)
-        print(self.find_element(*ProductPageLocators.PRODUCT_TITLE).text)
+        # print(self.find_element(*ProductPageLocators.PRODUCT_TITLE).text)
+        # print(self.find_element(*ProductPageLocators.PRODUCT_SHORT_DESCRIPTION).text)
         logger.info(f'current product: {self.find_element(*ProductPageLocators.PRODUCT_TITLE).text}')
-        # self.find_element(*ProductPageLocators.PRODUCT_PRICE)
-        # self.find_element(*ProductPageLocators.PRODUCT_PRICE)
+        assert self.products_titles() != '', \
+            f"Error. Title should be present for all products. Current title: {self.products_titles()}"
+        assert self.product_price() > 0, f"Error. Price should be more than 0. Current price {self.product_price()}"
+        description = self.find_element(*ProductPageLocators.PRODUCT_SHORT_DESCRIPTION).text
+        assert description != '', \
+            f"Error. Description should be present for all products. Current description: {description}"
+        self.verify_image_is_loaded(self.find_element(*ProductPageLocators.PRODUCT_IMAGE))
 
     def verify_product_title(self, product_title_search_text):
         current_title = self.find_element(*ProductPageLocators.PRODUCT_TITLE).text
@@ -47,7 +58,42 @@ class ProductPage(Page):
             price = prices[0]
         return float(price.text.split(currency_symbol)[1].replace(',', ''))
 
-    def get_products_titles(self):
+    def products_titles(self):
         return self.find_element(*ProductPageLocators.PRODUCT_TITLE).text
 
+    def product_price(self):
+        return self.get_product_price()
+
+    def verify_image_is_loaded(self, image_obj):
+        # print(image_is_selected.size)
+        image_is_loaded = \
+            self.driver.execute_script(
+                "return arguments[0].complete && typeof arguments[0].naturalWidth != \"undefined\" && arguments[0].naturalWidth > 0",
+                image_obj)
+        print(self.driver.execute_script(
+            "return arguments[0].complete && typeof arguments[0].naturalWidth != \"undefined\" && arguments[0].naturalWidth > 0",
+            image_obj))
+        assert image_is_loaded, "Error. Image is not loaded"
+
+    def zoom_in_product_image(self):
+        self.wait_for_element_appears(*ProductPageLocators.PRODUCT_IMAGE)
+        self.click(*ProductPageLocators.PRODUCT_IMAGE)
+        self.wait_for_element_appears(*ProductPageLocators.PHOTOSWIPE)
+
+    def close_zoom_image(self):
+        self.wait_for_element_appears(*ProductPageLocators.PHOTOSWIPE)
+        self.mouse_hover_action(*ProductPageLocators.PHOTOSWIPE_TOP_BAR)
+        self.click(*ProductPageLocators.PHOTOSWIPE_CLOSE_BTN)
+        self.wait_for_element_appears(*ProductPageLocators.PHOTOSWIPE_HIDDEN)
+
+    def swipe_between_zoom_in_images(self):
+        all_zoom_in_images = self.find_elements(*ProductPageLocators.PHOTOSWIPE_IMAGES)
+        for _ in range(4):
+            print('Click Arrow')
+            self.mouse_hover_action(*ProductPageLocators.PHOTOSWIPE_TOP_BAR)
+            self.find_element(*ProductPageLocators.PHOTOSWIPE_IS_CLICKABLE)
+            self.click(*ProductPageLocators.PHOTOSWIPE_ARROW_RIGHT)
+            print(self.find_element(*ProductPageLocators.PHOTOSWIPE_COUNTER).text)
+            for image in all_zoom_in_images:
+                print(image.get_attribute('style'))
 
